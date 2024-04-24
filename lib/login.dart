@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
+import 'package:proyecto_hoteles/registro.dart';
 
 import 'home.dart';
+import 'main.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,6 +13,35 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final user = TextEditingController();
+  final pass = TextEditingController();
+  final passConfirm = TextEditingController();
+
+  bool bandera = false;
+
+  Future<void> authenticateUser() async {
+    bool exit = false;
+    final allRows = await userDBHelper.queryAllRows();
+    // Iterar sobre la lista de usuarios
+    for (var userRow in allRows) {
+      // Comparar el usuario ingresado con cada usuario de la base de datos
+      if (user.text == userRow['user'] &&
+          pass.text == userRow['pass']) {
+        print(userRow);
+        // Si las credenciales son correctas, navegar a la pantalla Home
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Home(),
+        ));
+        exit = true;
+        return; // Salir de la función una vez que se encuentre una coincidencia
+      }
+    }
+    // Si no se encontró ninguna coincidencia, mostrar un mensaje de error
+    setState(() {
+      bandera = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -62,7 +93,7 @@ class _LoginState extends State<Login> {
                               )),
                           SizedBox(height: size.height * 0.03),
                           TextFormField(
-                            //controller: user,
+                            controller: user,
                             obscureText: false,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -73,7 +104,7 @@ class _LoginState extends State<Login> {
                                 ),
                               ),
                               filled: true,
-                              fillColor: cons.blanco,
+                              fillColor: Colors.white,
                               labelText: "Usuario",
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 15, horizontal: 20),
@@ -82,8 +113,8 @@ class _LoginState extends State<Login> {
                           ),
                           SizedBox(height: size.height * 0.02),
                           TextFormField(
-                            //controller: pass,
-                            obscureText: false,
+                            controller: pass,
+                            obscureText: true,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
@@ -102,19 +133,30 @@ class _LoginState extends State<Login> {
                           ),
                           SizedBox(height: size.height * 0.02),
                           ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                  const Home()));
-                              /*if (user.text.isNotEmpty &&
-                                pass.text.isNotEmpty &&
-                                tel.text.isNotEmpty) {
+                            onPressed: () async {
+                              if (user.text.isNotEmpty &&
+                                pass.text.isNotEmpty) {
                               await authenticateUser(); // Llama a authenticateUser de forma asíncrona
                             } else {
-                              setState(() {
-                                bandera = true;
-                              });
-                            }*/
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Error"),
+                                      content: Text(
+                                          "Lena todos los campos"),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("OK"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                            }
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: cons.gris,
@@ -129,9 +171,9 @@ class _LoginState extends State<Login> {
                           SizedBox(height: size.height * 0.02),
                           GestureDetector(
                             onTap: () {
-                              /*Navigator.of(context).push(MaterialPageRoute(
+                              Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
-                                const Registro(null)));*/
+                                const Registro()));
                             },
                             child: Text(
                               'Registrarse',

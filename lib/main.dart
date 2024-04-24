@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'database_helper.dart';
 import 'login.dart';
 
-void main() {
+final userDBHelper = UserTableHelper();
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await userDBHelper.init();
   runApp(const MyApp());
 }
 
