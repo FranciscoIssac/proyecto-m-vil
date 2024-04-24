@@ -4,7 +4,8 @@ import 'package:proyecto_hoteles/constantes.dart' as cons;
 import 'package:proyecto_hoteles/perfil.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final Map<String, dynamic> dataUser;
+  const Home({required this.dataUser, Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -114,7 +115,7 @@ class _HomeState extends State<Home> {
                           child: IconButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const Perfil()));
+                              builder: (context) => Perfil(dataUser: widget.dataUser)));
                         },
                         icon: Icon(Icons.person),
                       )),

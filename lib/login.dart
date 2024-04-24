@@ -28,9 +28,10 @@ class _LoginState extends State<Login> {
       if (user.text == userRow['user'] &&
           pass.text == userRow['pass']) {
         print(userRow);
+        final dataUser = userRow;
         // Si las credenciales son correctas, navegar a la pantalla Home
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Home(),
+          builder: (context) => Home(dataUser: dataUser),
         ));
         exit = true;
         return; // Salir de la función una vez que se encuentre una coincidencia

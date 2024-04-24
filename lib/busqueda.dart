@@ -61,8 +61,8 @@ class _BusquedaState extends State<Busqueda> {
                       child: Container(
                           child: IconButton(
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const Home()));
+                              /*Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const Home()));*/
                             },
                             icon: Icon(Icons.home),
                           )),
@@ -78,8 +78,8 @@ class _BusquedaState extends State<Busqueda> {
                       child: Container(
                           child: IconButton(
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const Perfil()));
+                              /*Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const Perfil()));*/
                             },
                             icon: Icon(Icons.person),
                           )),

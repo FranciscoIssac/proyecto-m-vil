@@ -5,14 +5,15 @@ import 'package:proyecto_hoteles/constantes.dart' as cons;
 import 'home.dart';
 
 class Perfil extends StatefulWidget {
-  const Perfil({super.key});
+  final Map<String, dynamic> dataUser;
+
+  const Perfil({required this.dataUser, Key? key}) : super(key: key);
 
   @override
   State<Perfil> createState() => _PerfilState();
 }
 
 class _PerfilState extends State<Perfil> {
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -46,10 +47,57 @@ class _PerfilState extends State<Perfil> {
                 ),
               ),
               Container(
-                color: Colors.blue,
-                height: size.height * 0.8,
-                child: Center(
-                  child: Text('Perfil'),
+                color: cons.colorPrincipal,
+                height: 5,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(
+                        "Perfil",
+                        style: TextStyle(
+                            color: cons.gris,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 50),
+                      ),
+                      ClipOval(
+                        child: Image(
+                          image: AssetImage('imagenes/user2.png'),
+                          height: 110,
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      Container(
+                        width: size.width * 0.9,
+                        child: Column(
+                          children: [
+                            Text("Usuario",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text("${widget.dataUser['user']}",
+                                style: TextStyle(fontSize: 18)),
+                            Text("Nombre",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text("${widget.dataUser['name']}",
+                                style: TextStyle(fontSize: 18)),
+                            Text("Correo electrónico",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text("${widget.dataUser['mail']}",
+                                style: TextStyle(fontSize: 18)),
+                            Text("Teléfono",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text("${widget.dataUser['tel']}",
+                                style: TextStyle(fontSize: 18)),
+                            SizedBox(height: size.height * 0.02),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -62,7 +110,9 @@ class _PerfilState extends State<Perfil> {
                           child: IconButton(
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const Home()));
+                                  builder: (context) => Home(
+                                    dataUser: widget.dataUser,
+                                  )));
                             },
                             icon: Icon(Icons.home),
                           )),

@@ -294,7 +294,7 @@ class _RegistroState extends State<Registro> {
                                 final allRows =
                                     await userDBHelper.queryAllRows();
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => Home()));
+                                    builder: (context) => Home(dataUser: row,)));
                               }
                             },
                             style: ElevatedButton.styleFrom(
