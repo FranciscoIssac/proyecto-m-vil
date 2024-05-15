@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_hoteles/admin/gestor.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
 import 'package:proyecto_hoteles/registro.dart';
 
@@ -22,11 +23,19 @@ class _LoginState extends State<Login> {
   Future<void> authenticateUser() async {
     bool exit = false;
     final allRows = await userDBHelper.queryAllRows();
+    print(allRows);
     // Iterar sobre la lista de usuarios
     for (var userRow in allRows) {
+      if (user.text == 'admin' && pass.text == 'admin') {
+        final hotelRows = await hotelDBHelper.queryAllRows();
+        print(hotelRows);
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Gestor(hotelRows: hotelRows),
+        ));
+        return;
+      }
       // Comparar el usuario ingresado con cada usuario de la base de datos
-      if (user.text == userRow['user'] &&
-          pass.text == userRow['pass']) {
+      if (user.text == userRow['user'] && pass.text == userRow['pass']) {
         print(userRow);
         final dataUser = userRow;
         // Si las credenciales son correctas, navegar a la pantalla Home
@@ -38,9 +47,23 @@ class _LoginState extends State<Login> {
       }
     }
     // Si no se encontró ninguna coincidencia, mostrar un mensaje de error
-    setState(() {
-      bandera = true;
-    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text("Contraseña o Usuario incorrectos"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -56,9 +79,8 @@ class _LoginState extends State<Login> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  // Color inicial
                   cons.blanco,
-                  cons.colorPrincipal, // Color final
+                  cons.colorPrincipal,
                 ],
               ),
             ),
@@ -136,16 +158,15 @@ class _LoginState extends State<Login> {
                           ElevatedButton(
                             onPressed: () async {
                               if (user.text.isNotEmpty &&
-                                pass.text.isNotEmpty) {
-                              await authenticateUser(); // Llama a authenticateUser de forma asíncrona
-                            } else {
+                                  pass.text.isNotEmpty) {
+                                await authenticateUser(); // Llama a authenticateUser de forma asíncrona
+                              } else {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
                                       title: Text("Error"),
-                                      content: Text(
-                                          "Lena todos los campos"),
+                                      content: Text("Llena todos los campos"),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -157,7 +178,7 @@ class _LoginState extends State<Login> {
                                     );
                                   },
                                 );
-                            }
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: cons.gris,
@@ -166,15 +187,15 @@ class _LoginState extends State<Login> {
                                 fixedSize: Size(size.width * 0.6, 25)),
                             child: const Text(
                               'Ingresar',
-                              style: TextStyle(color: cons.blanco, fontSize: 20),
+                              style:
+                                  TextStyle(color: cons.blanco, fontSize: 20),
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                const Registro()));
+                                  builder: (context) => const Registro()));
                             },
                             child: Text(
                               'Registrarse',
@@ -192,14 +213,11 @@ class _LoginState extends State<Login> {
               ),
             ),
           )
-
         ],
       ),
     );
   }
 }
-
-
 
 /*
 child: Stack(

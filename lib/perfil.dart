@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_hoteles/busqueda.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
+import 'package:image_picker/image_picker.dart';
+import 'package:proyecto_hoteles/database_helper.dart';
+import 'dart:io';
 
 import 'home.dart';
 
@@ -14,6 +17,9 @@ class Perfil extends StatefulWidget {
 }
 
 class _PerfilState extends State<Perfil> {
+  late File imagen = File('imagenes/user2.png');
+  final picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -61,10 +67,69 @@ class _PerfilState extends State<Perfil> {
                             fontWeight: FontWeight.bold,
                             fontSize: 50),
                       ),
-                      ClipOval(
-                        child: Image(
-                          image: AssetImage('imagenes/user2.png'),
-                          height: 110,
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                contentPadding: EdgeInsets.all(0),
+                                content: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      InkWell(
+                                        onTap: () async {
+                                          var pickedFile;
+                                          pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                                          print(pickedFile.path);
+                                          imagen = File(pickedFile.path);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(20),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            border: Border(bottom: BorderSide(width: 1, color: Colors.grey))
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text("Seleccionar foto", style: TextStyle(fontSize: 16),),
+                                              ),
+                                              Icon(Icons.image, color: Colors.blue,)
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(20),
+                                          decoration: BoxDecoration(
+                                              color: Colors.red
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text("Cancelar", style: TextStyle(fontSize: 16, color: Colors.white), textAlign: TextAlign.center,),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                            imagen.existsSync() ? FileImage(imagen) : AssetImage('imagenes/user2.png') as ImageProvider,
+                          radius: 55,
                         ),
                       ),
                       SizedBox(height: size.height * 0.02),
@@ -108,31 +173,31 @@ class _PerfilState extends State<Perfil> {
                     Expanded(
                       child: Container(
                           child: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Home(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Home(
                                     dataUser: widget.dataUser,
                                   )));
-                            },
-                            icon: Icon(Icons.home),
-                          )),
+                        },
+                        icon: Icon(Icons.home),
+                      )),
                     ),
                     Expanded(
                       child: Container(
                           child: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const Busqueda()));
-                            },
-                            icon: Icon(Icons.search),
-                          )),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const Busqueda()));
+                        },
+                        icon: Icon(Icons.search),
+                      )),
                     ),
                     Expanded(
                       child: Container(
                           child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.person),
-                          )),
+                        onPressed: () {},
+                        icon: Icon(Icons.person),
+                      )),
                     )
                   ],
                 ),

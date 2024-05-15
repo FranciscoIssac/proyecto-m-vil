@@ -35,23 +35,25 @@ abstract class DatabaseHelper {
 
 class UserTableHelper extends DatabaseHelper {
   static const _tableName = 'user';
-  static const _columnId = '_id';
+  static const columnId = '_id';
   static const columnUser = 'user';
   static const columnName = 'name';
   static const columnMail = 'mail';
   static const columnTel = 'tel';
   static const columnPass = 'pass';
+  static const columnImg = 'img';
 
   @override
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $_tableName (
-        $_columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
         $columnName TEXT NOT NULL,
         $columnUser TEXT NOT NULL,
         $columnMail TEXT NOT NULL,
         $columnTel TEXT NOT NULL,
-        $columnPass TEXT NOT NULL
+        $columnPass TEXT NOT NULL,
+        $columnImg TEXT NOT NULL
       )
     ''');
   }
@@ -78,11 +80,11 @@ class UserTableHelper extends DatabaseHelper {
   // Actualiza la fila especificada por el id. El número de filas afectadas se devuelve.
   // Esto debería ser 1 siempre y cuando la fila exista.
   Future<int> update(Map<String, dynamic> row) async {
-    int id = row[_columnId];
+    int id = row[columnId];
     return await _db.update(
       _tableName,
       row,
-      where: '$_columnId = ?',
+      where: '$columnId = ?',
       whereArgs: [id],
     );
   }
@@ -92,7 +94,7 @@ class UserTableHelper extends DatabaseHelper {
   Future<int> delete(int id) async {
     return await _db.delete(
       _tableName,
-      where: '$_columnId = ?',
+      where: '$columnId = ?',
       whereArgs: [id],
     );
   }
@@ -100,17 +102,33 @@ class UserTableHelper extends DatabaseHelper {
 
 class HotelTableHelper extends DatabaseHelper {
   static const _tableName = 'hotel_table';
-  static const _columnId = '_id';
-  static const _columnName = 'name';
-  static const _columnDescription = 'description';
+  static const columnId = '_id';
+  static const columnName = 'name';
+  static const columnDescription = 'description';
+  static const columnRating = 'rating';
+  static const columnLocation = 'location';
+  static const columnTelephone = 'telephone';
+  static const columnAvailabilityS = 'availavilityS';
+  static const columnAvailabilityD = 'availavilityD';
+  static const columnPriceS = 'priceS';
+  static const columnPriceD = 'priceD';
+  static const columnImg = 'img';
 
   @override
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $_tableName (
-        $_columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-        $_columnName TEXT NOT NULL,
-        $_columnDescription TEXT NOT NULL
+        $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $columnName TEXT NOT NULL,
+        $columnDescription TEXT NOT NULL,
+        $columnRating REAL NOT NULL,
+        $columnLocation TEXT NOT NULL,
+        $columnTelephone TEXT NOT NULL,
+        $columnAvailabilityS INTEGER NOT NULL,
+        $columnAvailabilityD INTEGER NOT NULL,
+        $columnPriceS REAL NOT NULL,
+        $columnPriceD REAL NOT NULL,
+        $columnImg TEXT NOT NULL
       )
     ''');
   }
@@ -137,11 +155,11 @@ class HotelTableHelper extends DatabaseHelper {
   // Actualiza la fila especificada por el id. El número de filas afectadas se devuelve.
   // Esto debería ser 1 siempre y cuando la fila exista.
   Future<int> update(Map<String, dynamic> row) async {
-    int id = row[_columnId];
+    int id = row[columnId];
     return await _db.update(
       _tableName,
       row,
-      where: '$_columnId = ?',
+      where: '$columnId = ?',
       whereArgs: [id],
     );
   }
@@ -151,7 +169,7 @@ class HotelTableHelper extends DatabaseHelper {
   Future<int> delete(int id) async {
     return await _db.delete(
       _tableName,
-      where: '$_columnId = ?',
+      where: '$columnId = ?',
       whereArgs: [id],
     );
   }
