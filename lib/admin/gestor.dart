@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_hoteles/admin/agregar.dart';
+import 'package:proyecto_hoteles/admin/editar.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
 import 'package:proyecto_hoteles/main.dart';
 
@@ -47,6 +48,7 @@ class _GestorState extends State<Gestor> {
             color: cons.colorPrincipal,
             height: 5,
           ),
+          SizedBox(height: size.height * 0.02),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -73,42 +75,51 @@ class _GestorState extends State<Gestor> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit, color: Colors.blue,),
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.blue,
+                        ),
                         onPressed: () {
-                          // Acción para editar el hotel
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  Editar(hotel: hotel)));
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red,),
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
                           onPressed: () {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                      title: const Text(
-                                          '¿Desea borrarlo?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () async {
-                                            hotelDBHelper.delete(hotel['_id']);
-                                            final hotelRows = await hotelDBHelper.queryAllRows();
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).push(MaterialPageRoute(
-                                                builder: (context) => Gestor(hotelRows: hotelRows)));
-                                          },
-                                          child: const Text('Aceptar'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('Cancelar'),
-                                        ),
-                                      ],
-                                    );
+                                    title: const Text('¿Desea borrarlo?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () async {
+                                          hotelDBHelper.delete(hotel['_id']);
+                                          final hotelRows = await hotelDBHelper
+                                              .queryAllRows();
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) => Gestor(
+                                                      hotelRows: hotelRows)));
+                                        },
+                                        child: const Text('Aceptar'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Cancelar'),
+                                      ),
+                                    ],
+                                  );
                                 });
-                          }
-                      ),
+                          }),
                     ],
                   ),
                 );

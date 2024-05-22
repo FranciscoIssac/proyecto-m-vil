@@ -154,7 +154,7 @@ class _AgregarState extends State<Agregar> {
                             SizedBox(height: size.height * 0.02),
                             TextFormField(
                               controller: availavilityS,
-                              obscureText: true,
+                              obscureText: false,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -173,7 +173,7 @@ class _AgregarState extends State<Agregar> {
                             SizedBox(height: size.height * 0.02),
                             TextFormField(
                               controller: availavilityD,
-                              obscureText: true,
+                              obscureText: false,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -192,7 +192,7 @@ class _AgregarState extends State<Agregar> {
                             SizedBox(height: size.height * 0.02),
                             TextFormField(
                               controller: priceS,
-                              obscureText: true,
+                              obscureText: false,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -211,7 +211,7 @@ class _AgregarState extends State<Agregar> {
                             SizedBox(height: size.height * 0.02),
                             TextFormField(
                               controller: priceD,
-                              obscureText: true,
+                              obscureText: false,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),

@@ -21,6 +21,15 @@ class _PerfilState extends State<Perfil> {
   final picker = ImagePicker();
 
   @override
+  void initState() {
+    super.initState();
+    // Inicializa la imagen con la imagen predeterminada o la imagen actual del usuario
+    imagen = widget.dataUser['image'] != null
+        ? File(widget.dataUser['image'])
+        : File('imagenes/user2.png');
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
@@ -79,10 +88,12 @@ class _PerfilState extends State<Perfil> {
                                     children: [
                                       InkWell(
                                         onTap: () async {
-                                          var pickedFile;
-                                          pickedFile = await picker.pickImage(source: ImageSource.gallery);
-                                          print(pickedFile.path);
-                                          imagen = File(pickedFile.path);
+                                          final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                                          if (pickedFile != null) {
+                                            setState(() {
+                                              imagen = File(pickedFile.path); // Actualiza la imagen seleccionada
+                                            });
+                                          }
                                           Navigator.of(context).pop();
                                         },
                                         child: Container(
