@@ -10,15 +10,17 @@ abstract class DatabaseHelper {
   static const _databaseName = "MyDatabase.db";
   static const _databaseVersion = 1;
 
-  late Database _db;
+  static Database? _db;
 
   Future<void> init() async {
-    final path = await _getDatabasePath();
-    _db = await openDatabase(
-      path,
-      version: _databaseVersion,
-      onCreate: _onCreate,
-    );
+    if (_db == null) {
+      final path = await _getDatabasePath();
+      _db = await openDatabase(
+        path,
+        version: _databaseVersion,
+        onCreate: _onCreate,
+      );
+    }
   }
 
   Future<String> _getDatabasePath() async {
@@ -30,7 +32,37 @@ abstract class DatabaseHelper {
     }
   }
 
-  Future<void> _onCreate(Database db, int version);
+  Future<void> _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE user (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        user TEXT NOT NULL,
+        mail TEXT NOT NULL,
+        tel TEXT NOT NULL,
+        pass TEXT NOT NULL,
+        img TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE hotel_table (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL,
+        rating REAL NOT NULL,
+        location TEXT NOT NULL,
+        telephone TEXT NOT NULL,
+        availavilityS INTEGER NOT NULL,
+        availavilityD INTEGER NOT NULL,
+        priceS REAL NOT NULL,
+        priceD REAL NOT NULL,
+        img TEXT NOT NULL
+      )
+    ''');
+  }
+
+  Database get database => _db!;
 }
 
 class UserTableHelper extends DatabaseHelper {
@@ -43,45 +75,24 @@ class UserTableHelper extends DatabaseHelper {
   static const columnPass = 'pass';
   static const columnImg = 'img';
 
-  @override
-  Future<void> _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE $_tableName (
-        $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-        $columnName TEXT NOT NULL,
-        $columnUser TEXT NOT NULL,
-        $columnMail TEXT NOT NULL,
-        $columnTel TEXT NOT NULL,
-        $columnPass TEXT NOT NULL,
-        $columnImg TEXT NOT NULL
-      )
-    ''');
-  }
-
   // Métodos de ayuda
 
-  // Inserta una fila en la base de datos donde cada clave en el Mapa es un nombre de columna
-  // y el valor es el valor de la columna. El valor devuelto es el id de la fila insertada.
   Future<int> insert(Map<String, dynamic> row) async {
-    return await _db.insert(_tableName, row);
+    return await database.insert(_tableName, row);
   }
 
-  // Retorna todas las filas como una lista de mapas, donde cada mapa es una lista de clave-valor de columnas.
   Future<List<Map<String, dynamic>>> queryAllRows() async {
-    return await _db.query(_tableName);
+    return await database.query(_tableName);
   }
 
-  // Retorna la cantidad de filas en la tabla
   Future<int> queryRowCount() async {
-    final results = await _db.rawQuery('SELECT COUNT(*) FROM $_tableName');
+    final results = await database.rawQuery('SELECT COUNT(*) FROM $_tableName');
     return Sqflite.firstIntValue(results) ?? 0;
   }
 
-  // Actualiza la fila especificada por el id. El número de filas afectadas se devuelve.
-  // Esto debería ser 1 siempre y cuando la fila exista.
   Future<int> update(Map<String, dynamic> row) async {
     int id = row[columnId];
-    return await _db.update(
+    return await database.update(
       _tableName,
       row,
       where: '$columnId = ?',
@@ -89,10 +100,8 @@ class UserTableHelper extends DatabaseHelper {
     );
   }
 
-  // Elimina la fila especificada por el id. El número de filas afectadas se devuelve.
-  // Esto debería ser 1 siempre y cuando la fila exista.
   Future<int> delete(int id) async {
-    return await _db.delete(
+    return await database.delete(
       _tableName,
       where: '$columnId = ?',
       whereArgs: [id],
@@ -114,49 +123,24 @@ class HotelTableHelper extends DatabaseHelper {
   static const columnPriceD = 'priceD';
   static const columnImg = 'img';
 
-  @override
-  Future<void> _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE $_tableName (
-        $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-        $columnName TEXT NOT NULL,
-        $columnDescription TEXT NOT NULL,
-        $columnRating REAL NOT NULL,
-        $columnLocation TEXT NOT NULL,
-        $columnTelephone TEXT NOT NULL,
-        $columnAvailabilityS INTEGER NOT NULL,
-        $columnAvailabilityD INTEGER NOT NULL,
-        $columnPriceS REAL NOT NULL,
-        $columnPriceD REAL NOT NULL,
-        $columnImg TEXT NOT NULL
-      )
-    ''');
-  }
-
   // Métodos de ayuda
 
-  // Inserta una fila en la base de datos donde cada clave en el Mapa es un nombre de columna
-  // y el valor es el valor de la columna. El valor devuelto es el id de la fila insertada.
   Future<int> insert(Map<String, dynamic> row) async {
-    return await _db.insert(_tableName, row);
+    return await database.insert(_tableName, row);
   }
 
-  // Retorna todas las filas como una lista de mapas, donde cada mapa es una lista de clave-valor de columnas.
   Future<List<Map<String, dynamic>>> queryAllRows() async {
-    return await _db.query(_tableName);
+    return await database.query(_tableName);
   }
 
-  // Retorna la cantidad de filas en la tabla
   Future<int> queryRowCount() async {
-    final results = await _db.rawQuery('SELECT COUNT(*) FROM $_tableName');
+    final results = await database.rawQuery('SELECT COUNT(*) FROM $_tableName');
     return Sqflite.firstIntValue(results) ?? 0;
   }
 
-  // Actualiza la fila especificada por el id. El número de filas afectadas se devuelve.
-  // Esto debería ser 1 siempre y cuando la fila exista.
   Future<int> update(Map<String, dynamic> row) async {
     int id = row[columnId];
-    return await _db.update(
+    return await database.update(
       _tableName,
       row,
       where: '$columnId = ?',
@@ -164,10 +148,8 @@ class HotelTableHelper extends DatabaseHelper {
     );
   }
 
-  // Elimina la fila especificada por el id. El número de filas afectadas se devuelve.
-  // Esto debería ser 1 siempre y cuando la fila exista.
   Future<int> delete(int id) async {
-    return await _db.delete(
+    return await database.delete(
       _tableName,
       where: '$columnId = ?',
       whereArgs: [id],

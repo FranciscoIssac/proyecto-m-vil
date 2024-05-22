@@ -3,6 +3,7 @@ import 'package:proyecto_hoteles/constantes.dart' as cons;
 import 'package:proyecto_hoteles/database_helper.dart';
 import 'package:proyecto_hoteles/home.dart';
 
+import 'admin/gestor.dart';
 import 'main.dart';
 
 class Registro extends StatefulWidget {
@@ -287,14 +288,23 @@ class _RegistroState extends State<Registro> {
                                   UserTableHelper.columnName: name.text,
                                   UserTableHelper.columnTel: tel.text,
                                   UserTableHelper.columnMail: mail.text,
+                                  UserTableHelper.columnImg: '',
                                 };
                                 final id = await userDBHelper.insert(row);
                                 debugPrint('inserted row id: $id');
 
-                                final allRows =
-                                    await userDBHelper.queryAllRows();
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => Home(dataUser: row,)));
+                                if (user.text == 'admin' && pass.text == 'admin') {
+                                  final hotelRows = await hotelDBHelper.queryAllRows();
+                                  print(hotelRows);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Gestor(hotelRows: hotelRows),
+                                  ));
+                                  return;
+                                } else {
+                                  final allRows = await userDBHelper.queryAllRows();
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => Home(dataUser: row,)));
+                                }
                               }
                             },
                             style: ElevatedButton.styleFrom(

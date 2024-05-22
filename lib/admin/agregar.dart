@@ -285,6 +285,8 @@ class _AgregarState extends State<Agregar> {
                                     HotelTableHelper.columnAvailabilityD: availavilityD.text,
                                     HotelTableHelper.columnPriceS: priceS.text,
                                     HotelTableHelper.columnPriceD: priceD.text,
+                                    HotelTableHelper.columnRating: -1,
+                                    HotelTableHelper.columnImg: '',
                                   };
                                   final id = await hotelDBHelper.insert(row);
                                   debugPrint('inserted row id: $id');
