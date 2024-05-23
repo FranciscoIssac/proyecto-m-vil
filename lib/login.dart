@@ -25,9 +25,9 @@ class _LoginState extends State<Login> {
     final allRows = await userDBHelper.queryAllRows();
     print(allRows);
     // Iterar sobre la lista de usuarios
+    final hotelRows = await hotelDBHelper.queryAllRows();
     for (var userRow in allRows) {
       if (user.text == 'admin' && pass.text == 'admin') {
-        final hotelRows = await hotelDBHelper.queryAllRows();
         print(hotelRows);
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => Gestor(hotelRows: hotelRows),
@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
         final dataUser = userRow;
         // Si las credenciales son correctas, navegar a la pantalla Home
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Home(dataUser: dataUser),
+          builder: (context) => Home(dataUser: dataUser, hotelRows: hotelRows,),
         ));
         exit = true;
         return; // Salir de la función una vez que se encuentre una coincidencia

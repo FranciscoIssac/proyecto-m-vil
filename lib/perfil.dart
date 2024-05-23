@@ -9,8 +9,9 @@ import 'home.dart';
 
 class Perfil extends StatefulWidget {
   final Map<String, dynamic> dataUser;
+  final List<Map<String, dynamic>> hotelRows;
 
-  const Perfil({required this.dataUser, Key? key}) : super(key: key);
+  const Perfil({required this.dataUser, required this.hotelRows, Key? key}) : super(key: key);
 
   @override
   State<Perfil> createState() => _PerfilState();
@@ -188,6 +189,7 @@ class _PerfilState extends State<Perfil> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => Home(
                                     dataUser: widget.dataUser,
+                                hotelRows: widget.hotelRows,
                                   )));
                         },
                         icon: Icon(Icons.home),

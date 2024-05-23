@@ -291,10 +291,10 @@ class _RegistroState extends State<Registro> {
                                   UserTableHelper.columnImg: '',
                                 };
                                 final id = await userDBHelper.insert(row);
+                                final hotelRows = await hotelDBHelper.queryAllRows();
                                 debugPrint('inserted row id: $id');
 
                                 if (user.text == 'admin' && pass.text == 'admin') {
-                                  final hotelRows = await hotelDBHelper.queryAllRows();
                                   print(hotelRows);
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => Gestor(hotelRows: hotelRows),
@@ -303,7 +303,7 @@ class _RegistroState extends State<Registro> {
                                 } else {
                                   final allRows = await userDBHelper.queryAllRows();
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => Home(dataUser: row,)));
+                                      builder: (context) => Home(dataUser: row, hotelRows: hotelRows,)));
                                 }
                               }
                             },

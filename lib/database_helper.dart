@@ -60,6 +60,19 @@ abstract class DatabaseHelper {
         img TEXT NOT NULL
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE reservacion_table (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTEGER NOT NULL,
+        hotelId INTEGER NOT NULL,
+        fechaInicio TEXT NOT NULL,
+        fechaFin TEXT NOT NULL,
+        tipoHabitacion TEXT NOT NULL,
+        FOREIGN KEY (userId) REFERENCES user(_id),
+        FOREIGN KEY (hotelId) REFERENCES hotel_table(_id)
+      )
+    ''');
   }
 
   Database get database => _db!;
@@ -122,6 +135,49 @@ class HotelTableHelper extends DatabaseHelper {
   static const columnPriceS = 'priceS';
   static const columnPriceD = 'priceD';
   static const columnImg = 'img';
+
+  // Métodos de ayuda
+
+  Future<int> insert(Map<String, dynamic> row) async {
+    return await database.insert(_tableName, row);
+  }
+
+  Future<List<Map<String, dynamic>>> queryAllRows() async {
+    return await database.query(_tableName);
+  }
+
+  Future<int> queryRowCount() async {
+    final results = await database.rawQuery('SELECT COUNT(*) FROM $_tableName');
+    return Sqflite.firstIntValue(results) ?? 0;
+  }
+
+  Future<int> update(Map<String, dynamic> row) async {
+    int id = row[columnId];
+    return await database.update(
+      _tableName,
+      row,
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> delete(int id) async {
+    return await database.delete(
+      _tableName,
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
+  }
+}
+
+class ReservacionTableHelper extends DatabaseHelper {
+  static const _tableName = 'reservaciones';
+  static const columnId = '_id';
+  static const columnUserId = 'userId';
+  static const columnHotelId = 'hotelId';
+  static const columnFechaInicio = 'fechaInicio';
+  static const columnFechaFil = 'fechaFinal';
+  static const columnTipoHabitacion = 'tipoHabitacion';
 
   // Métodos de ayuda
 

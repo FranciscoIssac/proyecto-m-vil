@@ -4,7 +4,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
 
 class Reservacion extends StatefulWidget {
-  const Reservacion({super.key});
+  final Map<String, dynamic> dataHotel;
+  const Reservacion({required this.dataHotel, Key? key}) : super(key: key);
 
   @override
   State<Reservacion> createState() => _ReservacionState();
@@ -75,6 +76,17 @@ class _ReservacionState extends State<Reservacion> {
             ),
             Column(
               children: [
+                Text(
+                  "${widget.dataHotel['name']}",
+                  style: TextStyle(
+                      color: cons.gris,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30),
+                ),
+                SizedBox(height: size.height * 0.02),
+                Text(
+                  "Selecciona un rango de fechas", style: TextStyle(fontSize: 20),
+                ),
                 Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(

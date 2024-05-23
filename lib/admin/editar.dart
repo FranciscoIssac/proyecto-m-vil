@@ -69,7 +69,7 @@ class _EditarState extends State<Editar> {
                 padding: EdgeInsets.all(size.height * 0.04),
                 child: Column(
                   children: [
-                    Text("Agregar Hotel",
+                    Text("Editar Hotel",
                         style: TextStyle(
                           color: Color(0xFF1E1F22),
                           fontSize: 40,
@@ -313,7 +313,7 @@ class _EditarState extends State<Editar> {
                               borderRadius: BorderRadius.circular(30)),
                           fixedSize: Size(size.width * 0.6, 25)),
                       child: const Text(
-                        'Agregar',
+                        'Guardar',
                         style: TextStyle(color: cons.blanco, fontSize: 20),
                       ),
                     ),

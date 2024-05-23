@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_hoteles/admin/agregar.dart';
-import 'package:proyecto_hoteles/admin/editar.dart';
-import 'package:proyecto_hoteles/admin/reservaciones.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
-import 'package:proyecto_hoteles/main.dart';
 
-class Gestor extends StatefulWidget {
+class Reservaciones extends StatefulWidget {
   final List<Map<String, dynamic>> hotelRows;
 
-  const Gestor({required this.hotelRows, Key? key}) : super(key: key);
+  const Reservaciones({required this.hotelRows, Key? key}) : super(key: key);
 
   @override
-  State<Gestor> createState() => _GestorState();
+  State<Reservaciones> createState() => _ReservacionesState();
 }
 
-class _GestorState extends State<Gestor> {
+class _ReservacionesState extends State<Reservaciones> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -50,42 +46,12 @@ class _GestorState extends State<Gestor> {
             height: 5,
           ),
           SizedBox(height: size.height * 0.02),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const Agregar()));
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: cons.colorSecundario),
-                  child: const Text(
-                    'Agregar',
-                    style: TextStyle(color: cons.negro, fontSize: 20),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Reservaciones(hotelRows: widget.hotelRows)));
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: cons.colorSecundario),
-                  child: const Text(
-                    'Reservaciones',
-                    style: TextStyle(color: cons.negro, fontSize: 20),
-                  ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(height: size.height * 0.02),
-          Container(
-            color: cons.colorPrincipal,
-            height: 5,
+          Center(
+            child: Text("Elimina las reservaciones que han terminado",
+                style: TextStyle(
+                  color: Color(0xFF1E1F22),
+                  fontSize: 20,
+                )),
           ),
           Expanded(
             child: ListView.builder(
@@ -93,7 +59,8 @@ class _GestorState extends State<Gestor> {
               itemBuilder: (context, index) {
                 final hotel = widget.hotelRows[index];
                 return ListTile(
-                  title: Text('Nombre: ${hotel['name']}'),
+                  title: Text('ID: ${hotel['_id']}\nUsuario: ${hotel['name']}'),
+                  subtitle: Text('Fecha de inicio: ${hotel['_id']}\nFecha de término: ${hotel['_id']}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -102,10 +69,7 @@ class _GestorState extends State<Gestor> {
                           Icons.edit,
                           color: Colors.blue,
                         ),
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Editar(hotel: hotel)));
-                        },
+                        onPressed: () {},
                       ),
                       IconButton(
                           icon: Icon(
@@ -121,14 +85,14 @@ class _GestorState extends State<Gestor> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () async {
-                                          hotelDBHelper.delete(hotel['_id']);
+                                          /*hotelDBHelper.delete(hotel['_id']);
                                           final hotelRows = await hotelDBHelper
                                               .queryAllRows();
                                           Navigator.of(context).pop();
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) => Gestor(
-                                                      hotelRows: hotelRows)));
+                                                      hotelRows: hotelRows)));*/
                                         },
                                         child: const Text('Aceptar'),
                                       ),
