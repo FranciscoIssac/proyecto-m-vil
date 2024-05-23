@@ -213,6 +213,15 @@ class ReservacionTableHelper extends DatabaseHelper {
     return await database.query(_tableName);
   }
 
+  Future<List<Map<String, dynamic>>> queryReservationsByUserId(int userId) async {
+    await init();
+    return await database.query(
+      _tableName,
+      where: '$columnUserId = ?',
+      whereArgs: [userId],
+    );
+  }
+
   Future<int> queryRowCount() async {
     await init();
     final results = await database.rawQuery('SELECT COUNT(*) FROM $_tableName');

@@ -3,6 +3,7 @@ import 'package:proyecto_hoteles/busqueda.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
 import 'package:image_picker/image_picker.dart';
 import 'package:proyecto_hoteles/database_helper.dart';
+import 'package:proyecto_hoteles/main.dart';
 import 'dart:io';
 
 import 'home.dart';
@@ -20,14 +21,21 @@ class Perfil extends StatefulWidget {
 class _PerfilState extends State<Perfil> {
   late File imagen = File('imagenes/user2.png');
   final picker = ImagePicker();
+  List<Map<String, dynamic>> reservacionesRows = [];
 
   @override
   void initState() {
     super.initState();
-    // Inicializa la imagen con la imagen predeterminada o la imagen actual del usuario
-    imagen = widget.dataUser['image'] != null
-        ? File(widget.dataUser['image'])
-        : File('imagenes/user2.png');
+    imagen = widget.dataUser['image'] != null ? File(widget.dataUser['image']) : File('imagenes/user2.png');
+    _loadUserReservations();
+  }
+
+  Future<void> _loadUserReservations() async {
+    ReservacionTableHelper reservacionDBHelper = ReservacionTableHelper();
+    List<Map<String, dynamic>> reservacionesRows = await reservacionDBHelper.queryReservationsByUserId(widget.dataUser['_id']);
+    setState(() {
+      this.reservacionesRows = reservacionesRows;
+    });
   }
 
   @override
@@ -100,8 +108,8 @@ class _PerfilState extends State<Perfil> {
                                         child: Container(
                                           padding: EdgeInsets.all(20),
                                           decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border: Border(bottom: BorderSide(width: 1, color: Colors.grey))
+                                              color: Colors.white,
+                                              border: Border(bottom: BorderSide(width: 1, color: Colors.grey))
                                           ),
                                           child: Row(
                                             children: [
@@ -139,8 +147,7 @@ class _PerfilState extends State<Perfil> {
                           );
                         },
                         child: CircleAvatar(
-                          backgroundImage:
-                            imagen.existsSync() ? FileImage(imagen) : AssetImage('imagenes/user2.png') as ImageProvider,
+                          backgroundImage: imagen.existsSync() ? FileImage(imagen) : AssetImage('imagenes/user2.png') as ImageProvider,
                           radius: 55,
                         ),
                       ),
@@ -149,27 +156,30 @@ class _PerfilState extends State<Perfil> {
                         width: size.width * 0.9,
                         child: Column(
                           children: [
-                            Text("Usuario",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold)),
-                            Text("${widget.dataUser['user']}",
-                                style: TextStyle(fontSize: 18)),
-                            Text("Nombre",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold)),
-                            Text("${widget.dataUser['name']}",
-                                style: TextStyle(fontSize: 18)),
-                            Text("Correo electrónico",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold)),
-                            Text("${widget.dataUser['mail']}",
-                                style: TextStyle(fontSize: 18)),
-                            Text("Teléfono",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold)),
-                            Text("${widget.dataUser['tel']}",
-                                style: TextStyle(fontSize: 18)),
-                            SizedBox(height: size.height * 0.02),
+                            Text("Usuario", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text("${widget.dataUser['user']}", style: TextStyle(fontSize: 18)),
+                            Text("Nombre", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text("${widget.dataUser['name']}", style: TextStyle(fontSize: 18)),
+                            Text("Correo electrónico", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text("${widget.dataUser['mail']}", style: TextStyle(fontSize: 18)),
+                            Text("Teléfono", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text("${widget.dataUser['tel']}", style: TextStyle(fontSize: 18)),
+                            SizedBox(height: size.height * 0.04),
+                            Text("Historial de reservaciones", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            reservacionesRows.isEmpty
+                                ? Text("No hay reservaciones")
+                                : ListView.builder(
+                              shrinkWrap: true, // Ensures the ListView takes only the required space
+                              physics: NeverScrollableScrollPhysics(), // Prevents nested scrolling issues
+                              itemCount: reservacionesRows.length,
+                              itemBuilder: (context, index) {
+                                final reservacion = reservacionesRows[index];
+                                return ListTile(
+                                  title: Text("Hotel ID: ${reservacion['hotelId']}"),
+                                  subtitle: Text("Fecha Inicio: ${reservacion['fechaInicio']}, Fecha Fin: ${reservacion['fechaFin']}"),
+                                );
+                              },
+                            ),
                           ],
                         ),
                       )
@@ -184,33 +194,38 @@ class _PerfilState extends State<Perfil> {
                   children: [
                     Expanded(
                       child: Container(
-                          child: IconButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => Home(
-                                    dataUser: widget.dataUser,
+                                dataUser: widget.dataUser,
                                 hotelRows: widget.hotelRows,
-                                  )));
-                        },
-                        icon: Icon(Icons.home),
-                      )),
+                              ),
+                            ));
+                          },
+                          icon: Icon(Icons.home),
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Container(
-                          child: IconButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const Busqueda()));
-                        },
-                        icon: Icon(Icons.search),
-                      )),
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const Busqueda(),
+                            ));
+                          },
+                          icon: Icon(Icons.search),
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Container(
-                          child: IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.person),
-                      )),
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.person),
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -222,3 +237,4 @@ class _PerfilState extends State<Perfil> {
     );
   }
 }
+
