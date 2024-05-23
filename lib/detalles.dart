@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
+import 'package:proyecto_hoteles/home.dart';
+import 'package:proyecto_hoteles/main.dart';
+import 'package:proyecto_hoteles/perfil.dart';
 import 'package:proyecto_hoteles/reservacion.dart';
 
 class Detalles extends StatefulWidget {
+  final Map<String, dynamic> dataUser;
   final Map<String, dynamic> dataHotel;
 
-  const Detalles({required this.dataHotel, Key? key}) : super(key: key);
+  const Detalles({required this.dataHotel, required this.dataUser, Key? key}) : super(key: key);
 
   @override
   State<Detalles> createState() => _DetallesState();
@@ -15,6 +19,8 @@ class _DetallesState extends State<Detalles> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+    print(widget.dataUser);
 
     return Scaffold(
       body: Stack(
@@ -90,7 +96,7 @@ class _DetallesState extends State<Detalles> {
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => Reservacion(dataHotel: widget.dataHotel)));
+                                    builder: (context) => Reservacion(dataHotel: widget.dataHotel, dataUser: widget.dataUser,)));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: cons.colorPrincipal,
@@ -117,25 +123,43 @@ class _DetallesState extends State<Detalles> {
                   children: [
                     Expanded(
                       child: Container(
-                          child: IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.home),
-                      )),
+                        child: IconButton(
+                          onPressed: () async {
+                            final hotelRows = await hotelDBHelper.queryAllRows();
+
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Home(
+                                dataUser: widget.dataUser,
+                                hotelRows: hotelRows,
+                              )));},
+                          icon: Icon(Icons.home),
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Container(
-                          child: IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.search),
-                      )),
+                        child: IconButton(
+                          onPressed: () { },
+                          icon: Icon(Icons.search),
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Container(
-                          child: IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.person),
-                      )),
-                    )
+                        child: IconButton(
+                          onPressed: () async {
+                            final hotelRows = await hotelDBHelper.queryAllRows();
+
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Perfil(
+                                  dataUser: widget.dataUser,
+                                  hotelRows: hotelRows,
+                                )));
+                          },
+                          icon: Icon(Icons.person),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               )

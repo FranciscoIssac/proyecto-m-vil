@@ -37,10 +37,9 @@ class _LoginState extends State<Login> {
       // Comparar el usuario ingresado con cada usuario de la base de datos
       if (user.text == userRow['user'] && pass.text == userRow['pass']) {
         print(userRow);
-        final dataUser = userRow;
         // Si las credenciales son correctas, navegar a la pantalla Home
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Home(dataUser: dataUser, hotelRows: hotelRows,),
+          builder: (context) => Home(dataUser: userRow, hotelRows: hotelRows,),
         ));
         exit = true;
         return; // Salir de la función una vez que se encuentre una coincidencia

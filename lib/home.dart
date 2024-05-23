@@ -119,7 +119,7 @@ class _HomeState extends State<Home> {
                                 "Disponibilidad: ${hotel['availavilityS']}"),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Detalles(dataHotel: hotel)));
+                                  builder: (context) => Detalles(dataHotel: hotel, dataUser: widget.dataUser,)));
                             },
                           ),
                         );
@@ -144,7 +144,7 @@ class _HomeState extends State<Home> {
                                 "Disponibilidad: ${hotel['availavilityD']}"),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Detalles(dataHotel: hotel)));
+                                  builder: (context) => Detalles(dataHotel: hotel, dataUser: widget.dataUser,)));
                             },
                           ),
                         );

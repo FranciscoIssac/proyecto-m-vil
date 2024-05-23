@@ -68,9 +68,11 @@ class _GestorState extends State<Gestor> {
               ),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final reservacionRows = await reservacionDBHelper
+                        .queryAllRows();
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Reservaciones(hotelRows: widget.hotelRows)));
+                        builder: (context) => Reservaciones(reservacionRows: reservacionRows,)));
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: cons.colorSecundario),

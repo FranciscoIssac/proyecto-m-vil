@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_hoteles/admin/gestor.dart';
 import 'package:proyecto_hoteles/reservacion.dart';
-
 import 'database_helper.dart';
 import 'login.dart';
 
 final userDBHelper = UserTableHelper();
 final hotelDBHelper = HotelTableHelper();
+final reservacionDBHelper = ReservacionTableHelper();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await userDBHelper.init();
   await hotelDBHelper.init();
+  await reservacionDBHelper.init();
   runApp(const MyApp());
 }
 

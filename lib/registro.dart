@@ -26,25 +26,14 @@ class _RegistroState extends State<Registro> {
     final size = MediaQuery.of(context).size;
 
     bool validarFormatoTelefono(String telefono) {
-      // Expresión regular para validar un número de teléfono con formato internacional
       RegExp regex = RegExp(r'^\+(?:[0-9] ?){5,14}[0-9]$');
-
-      // Verificar si el número de teléfono coincide con el patrón
-      if (regex.hasMatch(telefono)) {
-        return true; // El número de teléfono es válido
-      } else {
-        return false; // El número de teléfono no es válido
-      }
+      return regex.hasMatch(telefono);
     }
 
     bool validarFormatoCorreo(String email) {
-      // Expresión regular para validar el formato del correo electrónico
       final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
-      // Verifica si el correo electrónico coincide con el formato esperado
       return emailRegex.hasMatch(email);
     }
-
 
     return Scaffold(
       body: Stack(
@@ -55,9 +44,8 @@ class _RegistroState extends State<Registro> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  // Color inicial
                   cons.blanco,
-                  cons.colorPrincipal, // Color final
+                  cons.colorPrincipal,
                 ],
               ),
             ),
@@ -301,9 +289,30 @@ class _RegistroState extends State<Registro> {
                                   ));
                                   return;
                                 } else {
-                                  final allRows = await userDBHelper.queryAllRows();
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => Home(dataUser: row, hotelRows: hotelRows,)));
+                                  final dataUser = await userDBHelper.queryOne(id);
+                                  if (dataUser != null) {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => Home(dataUser: dataUser, hotelRows: hotelRows),
+                                    ));
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text("Error"),
+                                          content: Text("No se encontró el usuario"),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text("OK"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 }
                               }
                             },
@@ -315,7 +324,7 @@ class _RegistroState extends State<Registro> {
                             child: const Text(
                               'Registrar',
                               style:
-                                  TextStyle(color: cons.blanco, fontSize: 20),
+                              TextStyle(color: cons.blanco, fontSize: 20),
                             ),
                           ),
                         ],

@@ -3,7 +3,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'dart:io';
-
 import 'package:sqflite/sqflite.dart';
 
 abstract class DatabaseHelper {
@@ -15,6 +14,7 @@ abstract class DatabaseHelper {
   Future<void> init() async {
     if (_db == null) {
       final path = await _getDatabasePath();
+      // await deleteDatabase(path);
       _db = await openDatabase(
         path,
         version: _databaseVersion,
@@ -25,6 +25,8 @@ abstract class DatabaseHelper {
 
   Future<String> _getDatabasePath() async {
     if (kIsWeb) {
+      // Para el entorno web, esto es solo un marcador de posición y probablemente no funcionará.
+      // Debes manejar el almacenamiento en el entorno web de otra manera.
       return "/assets/db";
     } else {
       final documentsDirectory = await getApplicationDocumentsDirectory();
@@ -69,6 +71,7 @@ abstract class DatabaseHelper {
         fechaInicio TEXT NOT NULL,
         fechaFin TEXT NOT NULL,
         tipoHabitacion TEXT NOT NULL,
+        activa BOOL NOT NULL,
         FOREIGN KEY (userId) REFERENCES user(_id),
         FOREIGN KEY (hotelId) REFERENCES hotel_table(_id)
       )
@@ -88,22 +91,38 @@ class UserTableHelper extends DatabaseHelper {
   static const columnPass = 'pass';
   static const columnImg = 'img';
 
-  // Métodos de ayuda
-
   Future<int> insert(Map<String, dynamic> row) async {
+    await init();
     return await database.insert(_tableName, row);
   }
 
   Future<List<Map<String, dynamic>>> queryAllRows() async {
+    await init();
     return await database.query(_tableName);
   }
 
+  Future<Map<String, dynamic>?> queryOne(int id) async {
+    await init();
+    List<Map<String, dynamic>> results = await database.query(
+      _tableName,
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
+    if (results.isNotEmpty) {
+      return results.first;
+    } else {
+      return null;
+    }
+  }
+
   Future<int> queryRowCount() async {
+    await init();
     final results = await database.rawQuery('SELECT COUNT(*) FROM $_tableName');
     return Sqflite.firstIntValue(results) ?? 0;
   }
 
   Future<int> update(Map<String, dynamic> row) async {
+    await init();
     int id = row[columnId];
     return await database.update(
       _tableName,
@@ -114,6 +133,7 @@ class UserTableHelper extends DatabaseHelper {
   }
 
   Future<int> delete(int id) async {
+    await init();
     return await database.delete(
       _tableName,
       where: '$columnId = ?',
@@ -136,22 +156,24 @@ class HotelTableHelper extends DatabaseHelper {
   static const columnPriceD = 'priceD';
   static const columnImg = 'img';
 
-  // Métodos de ayuda
-
   Future<int> insert(Map<String, dynamic> row) async {
+    await init();
     return await database.insert(_tableName, row);
   }
 
   Future<List<Map<String, dynamic>>> queryAllRows() async {
+    await init();
     return await database.query(_tableName);
   }
 
   Future<int> queryRowCount() async {
+    await init();
     final results = await database.rawQuery('SELECT COUNT(*) FROM $_tableName');
     return Sqflite.firstIntValue(results) ?? 0;
   }
 
   Future<int> update(Map<String, dynamic> row) async {
+    await init();
     int id = row[columnId];
     return await database.update(
       _tableName,
@@ -162,6 +184,7 @@ class HotelTableHelper extends DatabaseHelper {
   }
 
   Future<int> delete(int id) async {
+    await init();
     return await database.delete(
       _tableName,
       where: '$columnId = ?',
@@ -171,30 +194,33 @@ class HotelTableHelper extends DatabaseHelper {
 }
 
 class ReservacionTableHelper extends DatabaseHelper {
-  static const _tableName = 'reservaciones';
+  static const _tableName = 'reservacion_table';
   static const columnId = '_id';
   static const columnUserId = 'userId';
   static const columnHotelId = 'hotelId';
   static const columnFechaInicio = 'fechaInicio';
-  static const columnFechaFil = 'fechaFinal';
+  static const columnFechaFin = 'fechaFin';
   static const columnTipoHabitacion = 'tipoHabitacion';
-
-  // Métodos de ayuda
+  static const columnActiva = 'activa';
 
   Future<int> insert(Map<String, dynamic> row) async {
+    await init();
     return await database.insert(_tableName, row);
   }
 
   Future<List<Map<String, dynamic>>> queryAllRows() async {
+    await init();
     return await database.query(_tableName);
   }
 
   Future<int> queryRowCount() async {
+    await init();
     final results = await database.rawQuery('SELECT COUNT(*) FROM $_tableName');
     return Sqflite.firstIntValue(results) ?? 0;
   }
 
   Future<int> update(Map<String, dynamic> row) async {
+    await init();
     int id = row[columnId];
     return await database.update(
       _tableName,
@@ -205,6 +231,7 @@ class ReservacionTableHelper extends DatabaseHelper {
   }
 
   Future<int> delete(int id) async {
+    await init();
     return await database.delete(
       _tableName,
       where: '$columnId = ?',

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_hoteles/constantes.dart' as cons;
+import 'package:proyecto_hoteles/database_helper.dart';
+import 'package:proyecto_hoteles/main.dart';
 
 class Reservaciones extends StatefulWidget {
-  final List<Map<String, dynamic>> hotelRows;
+  final List<Map<String, dynamic>> reservacionRows;
 
-  const Reservaciones({required this.hotelRows, Key? key}) : super(key: key);
+  const Reservaciones({required this.reservacionRows, Key? key}) : super(key: key);
 
   @override
   State<Reservaciones> createState() => _ReservacionesState();
@@ -55,22 +57,23 @@ class _ReservacionesState extends State<Reservaciones> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: widget.hotelRows.length,
+              itemCount: widget.reservacionRows.length,
               itemBuilder: (context, index) {
-                final hotel = widget.hotelRows[index];
+                final reservacion = widget.reservacionRows[index];
                 return ListTile(
-                  title: Text('ID: ${hotel['_id']}\nUsuario: ${hotel['name']}'),
-                  subtitle: Text('Fecha de inicio: ${hotel['_id']}\nFecha de término: ${hotel['_id']}'),
+                  title: Text('ID usuario: ${reservacion['userId']}\nID hotel: ${reservacion['hotelId']}'),
+                  subtitle: Text('Fecha de inicio: ${reservacion['fechaInicio']}\nFecha de término: ${reservacion['fechaFin']}\nTipo de habitación: ${reservacion['tipoHabitacion']}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(
+                      /*IconButton(
                         icon: Icon(
                           Icons.edit,
                           color: Colors.blue,
                         ),
                         onPressed: () {},
-                      ),
+                      ),*/
+                      reservacion['activa'] == 1 ?
                       IconButton(
                           icon: Icon(
                             Icons.delete,
@@ -85,14 +88,18 @@ class _ReservacionesState extends State<Reservaciones> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () async {
-                                          /*hotelDBHelper.delete(hotel['_id']);
-                                          final hotelRows = await hotelDBHelper
-                                              .queryAllRows();
+                                          Map<String, dynamic> reservacionRow = {
+                                            ReservacionTableHelper.columnId: reservacion['_id'],
+                                            ReservacionTableHelper.columnActiva: 0,
+                                          };
+                                          final reservacionId = await reservacionDBHelper.update(reservacionRow);
+                                          debugPrint('inserted row id: $reservacionId');
+                                          final reservacionesRows = await reservacionDBHelper.queryAllRows();
                                           Navigator.of(context).pop();
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
-                                                  builder: (context) => Gestor(
-                                                      hotelRows: hotelRows)));*/
+                                                  builder: (context) => Reservaciones(
+                                                      reservacionRows: reservacionesRows,)));
                                         },
                                         child: const Text('Aceptar'),
                                       ),
@@ -104,8 +111,11 @@ class _ReservacionesState extends State<Reservaciones> {
                                       ),
                                     ],
                                   );
-                                });
-                          }),
+                                })
+                            ;
+                          })
+                          :
+                          Container(),
                     ],
                   ),
                 );
